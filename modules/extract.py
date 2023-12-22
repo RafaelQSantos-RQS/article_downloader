@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 BASE_URL = 'https://pubmed.ncbi.nlm.nih.gov'
 
-def extract_pcmid(pubmed:str):
+def extract_pcmid_from_pubmed(pubmed:str):
     '''
     Extrai o PMCID associado a um número Pubmed específico.
 
@@ -45,7 +45,7 @@ def extract_pmcid_from_list(list_of_pubmed:list[str],number_of_webscrappers:int=
     '''
     dataframe = pd.DataFrame(columns=['pubmed_accession_number', 'pmcid'])
     with ThreadPoolExecutor(max_workers=number_of_webscrappers) as executor:
-        results = list(executor.map(extract_pcmid, list_of_pubmed))
+        results = list(executor.map(extract_pcmid_from_pubmed, list_of_pubmed))
 
     for result in results:
         row = pd.Series(result)
