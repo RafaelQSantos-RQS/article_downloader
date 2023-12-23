@@ -23,7 +23,7 @@ def download_article_from_pmcid(pmcid: str, headless: bool = False, save_in: str
         browser = p.firefox.launch(headless=headless)
         context = browser.new_context()
         page = context.new_page()
-        page.goto(url=full_url)
+        page.goto(url=full_url,timeout=180000)
         if page.get_by_role("link", name="PDF (").count() > 0:
             pdf_button = page.get_by_role("link", name="PDF (")
             link_for_request = BASE_URL + pdf_button.get_attribute('href')
