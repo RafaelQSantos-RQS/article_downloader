@@ -1,4 +1,3 @@
-import pandas as pd
 from modules.utilities import setup_filesystem
 from modules.transform import data_processing
 from modules.extract import extract_pmcid_from_list
