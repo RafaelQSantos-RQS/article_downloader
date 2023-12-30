@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 def setup_filesystem():
     '''
@@ -25,3 +26,6 @@ def setup_filesystem():
             print(f"O diretório {path} já existe!")
         except Exception as err:
             print(f"Erro ao criar o diretório {path}: {err}")
+        
+def datetimestamp():
+    return datetime.now().strftime('%d/%m/%Y - %H:%M:%S')

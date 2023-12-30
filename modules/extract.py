@@ -2,8 +2,11 @@ import pandas as pd
 import os
 from playwright.sync_api import sync_playwright
 from concurrent.futures import ThreadPoolExecutor
+from modules.utilities import datetimestamp
+from logging import info,error,INFO,basicConfig
 
 BASE_URL = 'https://pubmed.ncbi.nlm.nih.gov'
+basicConfig(level=INFO,format=f'{datetimestamp()} %(levelname)s => %(message)s')
 
 def extract_pcmid_from_pubmed(pubmed:str,headless:bool=False) -> dict:
     '''
@@ -28,7 +31,7 @@ def extract_pcmid_from_pubmed(pubmed:str,headless:bool=False) -> dict:
             result = {'pubmed_accession_number': str(pubmed), 'pmcid': None}
         
         browser.close()
-
+        info(msg=f'Pubmed: {result.get("pubmed_accession_number")} -> PMCID: {result.get("pmcid")}')
         return result
 
 def extract_pmcid_from_list(list_of_pubmed: list[str], number_of_webscrappers: int = 1,headless: bool = False, save_in: str = '.') -> None:
@@ -56,4 +59,5 @@ def extract_pmcid_from_list(list_of_pubmed: list[str], number_of_webscrappers: i
     
     csv_path = os.path.join(save_in, 'pubmed_vs_pmcid.csv')
     dataframe.to_csv(csv_path, index=False)
-    print(f"Resultados salvos em: {csv_path}")
+    msg = f"Resultados salvos em: {csv_path}"
+    info(msg=msg)

@@ -1,5 +1,6 @@
 # Article downloader
-Este projeto consiste em duas automações para facilitar o processo de obtenção de artigos científicos. A primeira etapa envolve a extração do PMCID (PubMed Central ID) com base em um identificador PubMed. Na segunda etapa, o projeto realiza o download do artigo associado ao PMCID.
+## Cenário
+Este projeto envolve a criação de uma solução de automação, na qual desenvolvi uma abordagem para manipular um [conjunto de dados](data/raw/DENV2_locus_pubmed.csv) contendo duas colunas, denominadas **locus** e **Pubmed Accession Number**. O processo abrange três macros etapas: tratamento dos dados, extração dos identificadores PMC (PubMed Central) correspondentes aos números de acesso do Pubmed e o download dos artigos associados aos identificadores PMC.
 
 # Funcionalidades
 ## 1. Extração de PMCID a partir de um pubmed (extract_pcmid_from_pubmed)
