@@ -6,7 +6,7 @@ from modules.utilities import datetimestamp
 from logging import info,error,INFO,basicConfig
 
 BASE_URL = 'https://pubmed.ncbi.nlm.nih.gov'
-basicConfig(level=INFO,format=f'{datetimestamp()} %(levelname)s => %(message)s')
+basicConfig(level=INFO, format=f'%(asctime)s (%(funcName)s): %(message)s',datefmt='%d/%m/%Y %H:%M:%S')
 
 def extract_pcmid_from_pubmed(pubmed:str,headless:bool=False) -> dict:
     '''

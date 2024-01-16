@@ -2,8 +2,10 @@ import requests
 import os
 from playwright.sync_api import sync_playwright
 from concurrent.futures import ThreadPoolExecutor
+from logging import info, error, INFO, basicConfig
 
 BASE_URL = 'https://www.ncbi.nlm.nih.gov'
+basicConfig(level=INFO, format=f'%(asctime)s (%(funcName)s): %(message)s',datefmt='%d/%m/%Y %H:%M:%S')
 
 def download_article_from_pmcid(pmcid: str, headless: bool = False, save_in: str = '.') -> None:
     '''
@@ -33,18 +35,22 @@ def download_article_from_pmcid(pmcid: str, headless: bool = False, save_in: str
             headers = {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
             }
+            try:
+                response = requests.get(url=link_for_request, headers=headers)
+                response.raise_for_status()
 
-            response = requests.get(url=link_for_request, headers=headers)
-            response.raise_for_status()  # Verifica o status da resposta
+                with open(os.path.join(save_in, f'{pmcid}.pdf'), 'wb') as file:
+                    file.write(response.content)
 
-            with open(os.path.join(save_in, f'{pmcid}.pdf'), 'wb') as file:
-                file.write(response.content)
-
-            print(f"Artigo {pmcid} baixado com sucesso.")
+                info(f"Artigo {pmcid} baixado com sucesso.")
+            except requests.HTTPError as err:
+                error(f"Erro ao fazer a requisição para o {link_for_request}")
+                with open(os.path.join(save_in, 'Artigos não baixados.txt'), 'a') as fail_request:
+                    fail_request.write(f'(Erro na requisição) {pmcid} - Link: {link_for_request} - Erro: {err}\n')
         else:
-            print(f"Falha ao baixar o artigo {pmcid}. PDF não disponível.")
-            with open(os.path.join(save_in, 'pmcid_não_baixados.txt'), 'a') as fail_file:
-                fail_file.write(f'{pmcid}\n')
+            info(f"Falha ao baixar o artigo {pmcid}. PDF não disponível.")
+            with open(os.path.join(save_in, 'Artigos não baixados.txt'), 'a') as fail_file:
+                fail_file.write(f'(Sem link para download) {pmcid}\n')
 
 def download_articles_from_list_of_pmcid(list_of_pmcid: list[str], headless: bool, save_in: str = '.', max_workers: int = 1) -> None:
     '''
