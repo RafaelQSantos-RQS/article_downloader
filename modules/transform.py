@@ -1,8 +1,6 @@
 import pandas as pd
 from typing import Optional
-from logging import info, error, INFO, basicConfig
-
-basicConfig(level=INFO, format=f'%(asctime)s (%(funcName)s): %(message)s',datefmt='%d/%m/%Y %H:%M:%S')
+from logging import info
 
 def data_processing(data_path: str, save_in: str = None) -> Optional[pd.DataFrame]:
     """
