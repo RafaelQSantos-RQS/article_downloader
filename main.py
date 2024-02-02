@@ -19,7 +19,7 @@ def main():
     # Coletando os pmcid da lista de pubmed
     info("## COLETANDO OS PMCID DA LISTA DE PUBMED ##")
     list_of_pubmed = df_pubmed_vs_locus['Pubmed accession number'].unique()
-    extract_pmcid_from_list(list_of_pubmed=list_of_pubmed,number_of_webscrappers=8,save_in='./data/processed')
+    extract_pmcid_from_list(list_of_pubmed=list_of_pubmed,number_of_webscrappers=4,save_in='./data/processed')
 
     # Baixando os artigos
     info("## BAIXANDO OS ARTIGOS ##")
