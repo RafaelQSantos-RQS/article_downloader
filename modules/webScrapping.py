@@ -1,8 +1,8 @@
 import os
 import requests
 import pandas as pd
-from logging import info, error
 from bs4 import BeautifulSoup
+from modules.utilities import log, error
 from concurrent.futures import ThreadPoolExecutor
 
 BASE_URL = 'https://pubmed.ncbi.nlm.nih.gov'
@@ -44,7 +44,7 @@ def extract_pcmid_from_pubmed(pubmed:str) -> dict:
         else:
             pmcid = None
         result = {'pubmed_accession_number': str(pubmed), 'pmcid': pmcid}
-        info(msg=f'Pubmed: {result.get("pubmed_accession_number")} -> PMCID: {result.get("pmcid")}')
+        log(msg=f'Pubmed: {result.get("pubmed_accession_number")} -> PMCID: {result.get("pmcid")}')
         return result
     except requests.RequestException as err:
         error(f"Erro ao fazer requisição a url ({url}) -> {err}")
@@ -54,7 +54,7 @@ def extract_pcmid_from_pubmed(pubmed:str) -> dict:
         raise err
         
 
-def extract_pmcid_from_list(list_of_pubmed: list[str], number_of_webscrappers: int = 1, save_in: str = '.') -> None:
+def extract_pmcid_from_list(list_of_pubmed: list[str], number_of_webscrappers: int = 1) -> dict:
     '''
     Extrai informações de PMCID para uma lista de números Pubmed em paralelo usando ThreadPoolExecutor.
     Os resultados são armazenados em um DataFrame e exportados para um arquivo CSV.
@@ -62,21 +62,11 @@ def extract_pmcid_from_list(list_of_pubmed: list[str], number_of_webscrappers: i
     Parâmetros:
         - list_of_pubmed (List[str]): Lista de números Pubmed.
         - number_of_webscrappers (int): Número de processos paralelos.
-        - save_in (str): Diretório para salvar o arquivo CSV resultante.
 
     Retorna:
         - None
-    '''
-    dataframe = pd.DataFrame(columns=['pubmed_accession_number', 'pmcid'])
-    
+    '''    
     with ThreadPoolExecutor(max_workers=number_of_webscrappers) as executor:
         results = list(executor.map(extract_pcmid_from_pubmed, list_of_pubmed))
 
-    for result in results:
-        row = pd.Series(result)
-        dataframe = pd.concat([dataframe, row.to_frame().T], ignore_index=True)
-    
-    csv_path = os.path.join(save_in, 'pubmed_vs_pmcid.csv')
-    dataframe.to_csv(csv_path, index=False)
-    msg = f"Resultados salvos em: {csv_path}"
-    info(msg=msg)
+    return results

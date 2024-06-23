@@ -1,10 +1,20 @@
 import os
 from datetime import datetime
-from logging import info
+
+def datetimestamp():
+    return datetime.now().strftime('[%d/%m/%Y %H:%M:%S]')
+
+def log(msg):
+    print('[LOG]',datetimestamp(),msg)
+    
+def error(msg):
+        print('[ERROR]',datetimestamp(),msg)
 
 def setup_filesystem():
     '''
-    Configura o sistema de arquivos criando diretórios para armazenar dados brutos e processados.
+    Description
+    -----------
+        Configura o sistema de arquivos criando diretórios para armazenar dados brutos e processados.
 
     Parameters
     ----------
@@ -16,16 +26,13 @@ def setup_filesystem():
 
     '''
     # Lista de caminhos dos diretórios a serem criados
-    list_of_path = ['data/raw', 'data/processed','data/downloaded/pdf','data/downloaded/tgz']
+    list_of_path = ['data/raw', 'data/processed','data/articles/pdf','data/articles/tgz']
     # Loop pelos caminhos e tenta criar os diretórios
     for path in list_of_path:
         try:
             os.makedirs(path)
-            info(f"O diretório {path} foi criado com sucesso.")
+            log(f"O diretório {path} foi criado com sucesso.")
         except FileExistsError:
-            info(f"O diretório {path} já existe!")
+            error(f"O diretório {path} já existe!")
         except Exception as err:
-            info(f"Erro ao criar o diretório {path}: {err}")
-        
-def datetimestamp():
-    return datetime.now().strftime('%d/%m/%Y - %H:%M:%S')
+            error(f"Erro ao criar o diretório {path}: {err}")
